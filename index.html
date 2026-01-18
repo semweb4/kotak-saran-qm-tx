@@ -40,7 +40,7 @@
     
     <div class="container mt-5">
         <h1 class="text-center py-4" data-i18n="title">Kotak Saran Digital QM-TX</h1>
-        <form method="post" action="https://script.google.com/macros/s/AKfycbxMpNP4-8HNGtQPzkoqqoBmTSahRPAD2WQ5n3MoZDtiBWiNdzx0WB0TkPYZLIpEkZCp5Q/exec" onsubmit="handleSubmit(event)">
+        <form id="suggestionForm">
             <div class="mb-3">
                 <label for="name" class="form-label" data-i18n="nameLabel">Nama</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder data-i18n="namePlaceholder">
@@ -134,17 +134,37 @@
         // Set default language
         setLanguage('id');
         
+        // Google Apps Script URL
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxMpNP4-8HNGtQPzkoqqoBmTSahRPAD2WQ5n3MoZDtiBWiNdzx0WB0TkPYZLIpEkZCp5Q/exec';
+        
         // Handle form submission
-        function handleSubmit(event) {
+        document.getElementById('suggestionForm').addEventListener('submit', function(event) {
             event.preventDefault();
             
-            // Show thank you modal
-            const modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
-            modal.show();
+            // Submit data to Google Sheets using fetch
+            const formData = new FormData(this);
             
-            // Reset form
-            event.target.reset();
-        }
+            fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            })
+            .then(response => {
+                // Show thank you modal
+                const modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+                modal.show();
+                
+                // Reset form
+                this.reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Still show modal even if there's an error
+                const modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+                modal.show();
+                this.reset();
+            });
+        });
         
         // Close modal function
         function closeModal() {
