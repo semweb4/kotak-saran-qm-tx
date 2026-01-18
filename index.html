@@ -25,6 +25,11 @@
             color: white;
             border-color: #0d6efd;
         }
+        .modal-message {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -35,7 +40,7 @@
     
     <div class="container mt-5">
         <h1 class="text-center py-4" data-i18n="title">Kotak Saran Digital QM-TX</h1>
-        <form method="post" action="https://script.google.com/macros/s/AKfycbxMpNP4-8HNGtQPzkoqqoBmTSahRPAD2WQ5n3MoZDtiBWiNdzx0WB0TkPYZLIpEkZCp5Q/exec">
+        <form method="post" action="https://script.google.com/macros/s/AKfycbxMpNP4-8HNGtQPzkoqqoBmTSahRPAD2WQ5n3MoZDtiBWiNdzx0WB0TkPYZLIpEkZCp5Q/exec" onsubmit="handleSubmit(event)">
             <div class="mb-3">
                 <label for="name" class="form-label" data-i18n="nameLabel">Nama</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder data-i18n="namePlaceholder">
@@ -48,6 +53,27 @@
         </form>
     </div>
 
+    <!-- Thank You Modal -->
+    <div class="modal fade" id="thankYouModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-message">
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="success" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                        </div>
+                        <p data-i18n="thankYouMessage">TERIMA KASIH,<br>SARAN ANDA ADALAH<br>PRIORITAS KAMI</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100" data-i18n="closeButton" onclick="closeModal()">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const translations = {
             id: {
@@ -56,7 +82,9 @@
                 namePlaceholder: "Masukkan nama Anda",
                 suggestionLabel: "Saran",
                 suggestionPlaceholder: "Masukkan saran Anda",
-                submit: "Kirim"
+                submit: "Kirim",
+                thankYouMessage: "TERIMA KASIH,<br> SARAN ANDA ADALAH<br> PRIORITAS KAMI",
+                closeButton: "Tutup"
             },
             zh: {
                 title: "QM-TX 数字建议箱",
@@ -64,7 +92,9 @@
                 namePlaceholder: "请输入您的姓名",
                 suggestionLabel: "建议",
                 suggestionPlaceholder: "请输入您的建议",
-                submit: "提交"
+                submit: "提交",
+                thankYouMessage: "感谢您，<br>您的建议是我们<br>的首要任务",
+                closeButton: "关闭"
             }
         };
 
@@ -85,7 +115,7 @@
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[lang][key]) {
-                    element.textContent = translations[lang][key];
+                    element.innerHTML = translations[lang][key];
                 }
             });
             
@@ -93,7 +123,7 @@
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[lang][key] && element.tagName === 'INPUT') {
-                    element.placeholder = translations[lang][key];
+                    element.placeholder = translations[lang][key].replace(/<[^>]*>/g, '');
                 }
             });
             
@@ -103,6 +133,27 @@
         
         // Set default language
         setLanguage('id');
+        
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Show thank you modal
+            const modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+            modal.show();
+            
+            // Reset form
+            event.target.reset();
+        }
+        
+        // Close modal function
+        function closeModal() {
+            const modalEl = document.getElementById('thankYouModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) {
+                modal.hide();
+            }
+        }
     </script>
 </body>
 </html>
