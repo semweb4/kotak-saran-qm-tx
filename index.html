@@ -30,7 +30,7 @@
 <body>
     <div class="language-switch">
         <button class="lang-btn active" onclick="setLanguage('id')">ID</button>
-        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" onclick="setLanguage('zh')">ZH</button>
     </div>
     
     <div class="container mt-5">
@@ -58,13 +58,13 @@
                 suggestionPlaceholder: "Masukkan saran Anda",
                 submit: "Kirim"
             },
-            en: {
-                title: "Digital Suggestion Box QM-TX",
-                nameLabel: "Name",
-                namePlaceholder: "Enter your name",
-                suggestionLabel: "Suggestion",
-                suggestionPlaceholder: "Enter your suggestion",
-                submit: "Submit"
+            zh: {
+                title: "QM-TX 数字建议箱",
+                nameLabel: "姓名",
+                namePlaceholder: "请输入您的姓名",
+                suggestionLabel: "建议",
+                suggestionPlaceholder: "请输入您的建议",
+                submit: "提交"
             }
         };
 
@@ -76,7 +76,7 @@
             // Update active button
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.textContent.toLowerCase() === lang) {
+                if (btn.getAttribute('onclick').includes("'" + lang + "'")) {
                     btn.classList.add('active');
                 }
             });
